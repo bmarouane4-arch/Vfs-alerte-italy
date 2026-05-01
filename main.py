@@ -3,7 +3,7 @@ import time
 import random
 
 TOKEN = "YOUR_TOKEN"
-CHAT_ID = "1202717318"  # 👈 أنت فقط
+CHAT_ID = "YOUR_CHAT_ID"
 
 URL = "https://visa.vfsglobal.com/appointment/api/appointment/availability"
 
@@ -38,16 +38,22 @@ def check():
                 for item in data:
                     text = str(item).lower()
 
+                    # 🎯 فلترة المدن + توفر
                     if ("constantine" in text or "annaba" in text) and ("available" in text):
+
+                        # 📅 استخراج التاريخ
                         date = (
                             item.get("date") or
                             item.get("appointmentDate") or
                             item.get("slotDate")
                         )
+
                         if date:
                             dates_found.append(date)
 
+            # 🟢 إذا وجد تواريخ
             if dates_found:
+                # حذف التكرار + ترتيب
                 dates_unique = sorted(set(dates_found))
 
                 message = "🚨🔥 مواعيد ITALIE (Tourism) متوفرة!\n"
