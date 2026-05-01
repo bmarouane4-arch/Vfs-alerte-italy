@@ -3,7 +3,7 @@ import time
 import os
 
 TOKEN = os.getenv("8783362495:AAHqDon_R9bg5MEYW7yaFN3hyesn9sLi9Qw")
-CHAT_ID = os.getenv("1777639751")
+CHAT_ID = os.getenv("918455655")
 
 URL = "https://visa.vfsglobal.com/dza/fr/ita/book-an-appointment"
 
