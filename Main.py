@@ -21,11 +21,9 @@ def check_vfs():
 
     r = requests.get(URL, headers=headers)
 
-    # 👇 نطبع جزء من الصفحة باش نفهمو
-    print(r.text[:1000])
-
-    # 🔴 مؤقتاً نخليه يبعث كل مرة باش نتأكد
-    send_telegram("✅ البوت راهو يخدم ويفحص VFS")
+    # ❗ ملاحظة: هذا الشرط قد لا يعمل بسبب JavaScript
+    if "No appointments available" not in r.text:
+        send_telegram("🚨 موعد VFS إيطاليا متوفر! احجز بسرعة!")
 
 while True:
     try:
