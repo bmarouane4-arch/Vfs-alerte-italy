@@ -5,6 +5,8 @@ import time
 TOKEN = "8783362495:AAFNNvuZWysgDklNH9UiHK2nqJBzDG6B6P8"
 CHAT_ID = "1202717318"
 
+URL = "https://visa.vfsglobal.com/dza/fr/ita/book-an-appointment"
+
 def send(msg):
     requests.post(
         f"https://api.telegram.org/bot{TOKEN}/sendMessage",
@@ -16,15 +18,22 @@ def check():
         browser = p.chromium.launch(headless=True)
         page = browser.new_page()
 
-        page.goto("https://visa.vfsglobal.com/dza/fr/ita/book-an-appointment")
+        page.goto(URL)
 
-        # نستنّاو الصفحة تكمل
-        page.wait_for_timeout(8000)
+        # نستنى الموقع يحمل
+        page.wait_for_timeout(10000)
 
-        content = page.content()
+        content = page.content().lower()
 
-        if "No appointments available" not in content:
-            send("🚨🔥 موعد VFS إيطاليا متوفر! احجز بسرعة!")
+        # 🎯 فلترة مخصصة
+        found_city = ("constantine" in content) or ("annaba" in content)
+        found_tourism = ("tourism" in content) or ("touristique" in content)
+
+        # ❗ إذا ما كاش "no appointments"
+        available = "no appointments available" not in content
+
+        if found_city and found_tourism and available:
+            send("🚨🔥 موعد VFS ITALIE متوفر!\n📍 Constantine / Annaba\n🧳 Tourism\n🔥 احجز بسرعة!")
 
         browser.close()
 
