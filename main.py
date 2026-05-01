@@ -2,8 +2,8 @@ import requests
 import time
 import random
 
-TOKEN = "YOUR_TOKEN"
-CHAT_ID = "YOUR_CHAT_ID"
+TOKEN = "8783362495:AAFNNvuZWysgDklNH9UiHK2nqJBzDG6B6P8"
+CHAT_ID = "1202717318"
 
 URL = "https://visa.vfsglobal.com/appointment/api/appointment/availability"
 
@@ -20,56 +20,32 @@ payload = {
 }
 
 def send(msg):
+    print("📤 Sending:", msg)
     requests.post(
         f"https://api.telegram.org/bot{TOKEN}/sendMessage",
         data={"chat_id": CHAT_ID, "text": msg}
     )
 
 def check():
+    print("🔍 Checking VFS...")
+
     try:
         r = requests.post(URL, json=payload, headers=headers, timeout=20)
 
-        if r.status_code == 200:
-            data = r.json()
+        print("Status:", r.status_code)
 
-            dates_found = []
+        data = r.text.lower()
 
-            if isinstance(data, list):
-                for item in data:
-                    text = str(item).lower()
+        # 🧪 وضع الاختبار (مفعل)
+        if True:
+            send("🧪 TEST: البوت يخدم ويفحص كل دقيقة ✅")
 
-                    # 🎯 فلترة المدن + توفر
-                    if ("constantine" in text or "annaba" in text) and ("available" in text):
-
-                        # 📅 استخراج التاريخ
-                        date = (
-                            item.get("date") or
-                            item.get("appointmentDate") or
-                            item.get("slotDate")
-                        )
-
-                        if date:
-                            dates_found.append(date)
-
-            # 🟢 إذا وجد تواريخ
-            if dates_found:
-                # حذف التكرار + ترتيب
-                dates_unique = sorted(set(dates_found))
-
-                message = "🚨🔥 مواعيد ITALIE (Tourism) متوفرة!\n"
-                message += "📍 Constantine / Annaba\n\n"
-                message += "📅 التواريخ:\n"
-
-                for d in dates_unique:
-                    message += f"- {d}\n"
-
-                send(message)
-
-        else:
-            print("Status error:", r.status_code)
+        # 🔥 الوضع الحقيقي (رجعو بعد الاختبار)
+        # if ("constantine" in data or "annaba" in data) and ("available" in data):
+        #     send("🚨 موعد ITALIE Tourism متوفر في Constantine / Annaba 🔥")
 
     except Exception as e:
-        print("Error:", e)
+        print("❌ Error:", e)
 
 while True:
     check()
