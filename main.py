@@ -2,14 +2,17 @@ import requests
 import time
 import random
 
-TOKEN = "8783362495:AAFNNvuZWysgDklNH9UiHK2nqJBzDG6B6P8"
-CHAT_ID = "1202717318"
+TOKEN = "YOUR_TOKEN"
+CHAT_ID = "YOUR_CHAT_ID"
 
 URL = "https://visa.vfsglobal.com/appointment/api/appointment/availability"
 
 headers = {
-    "User-Agent": "Mozilla/5.0",
-    "Content-Type": "application/json"
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36",
+    "Accept": "application/json, text/plain, */*",
+    "Content-Type": "application/json",
+    "Origin": "https://visa.vfsglobal.com",
+    "Referer": "https://visa.vfsglobal.com/dza/fr/ita/book-an-appointment"
 }
 
 payload = {
@@ -29,6 +32,13 @@ def check():
     try:
         r = requests.post(URL, json=payload, headers=headers, timeout=20)
 
+        print("Status:", r.status_code)
+
+        # 🚫 إذا بلوك
+        if r.status_code == 403:
+            print("⛔ Blocked by VFS")
+            return
+
         if r.status_code == 200:
             data = r.json()
 
@@ -44,15 +54,13 @@ def check():
                             item.get("appointmentDate") or
                             item.get("slotDate")
                         )
-
                         if date:
                             dates_found.append(date)
 
-            # 📅 إذا لقى تواريخ
             if dates_found:
                 dates_unique = sorted(set(dates_found))
 
-                message = "🚨🔥 مواعيد ITALIE (Tourism) متوفرة!\n"
+                message = "🚨🔥 مواعيد ITALIE (Tourism)\n"
                 message += "📍 Constantine / Annaba\n\n"
                 message += "📅 التواريخ:\n"
 
@@ -62,11 +70,13 @@ def check():
                 send(message)
 
         else:
-            print("Status error:", r.status_code)
+            print("Error status:", r.status_code)
 
     except Exception as e:
         print("Error:", e)
 
 while True:
     check()
-    time.sleep(random.randint(30, 60))
+
+    # ⏱️ مهم: تأخير باش ما يتبلوكش
+    time.sleep(random.randint(45, 90))
