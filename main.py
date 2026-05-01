@@ -20,32 +20,30 @@ payload = {
 }
 
 def send(msg):
-    print("📤 Sending:", msg)
     requests.post(
         f"https://api.telegram.org/bot{TOKEN}/sendMessage",
         data={"chat_id": CHAT_ID, "text": msg}
     )
 
 def check():
-    print("🔍 Checking VFS...")
-
     try:
         r = requests.post(URL, json=payload, headers=headers, timeout=20)
 
-        print("Status:", r.status_code)
+        if r.status_code == 200:
+            data = r.text.lower()
 
-        data = r.text.lower()
+            # 🎯 فلترة:
+            has_city = ("constantine" in data) or ("annaba" in data)
+            has_available = ("available" in data)
 
-        # 🧪 وضع الاختبار (مفعل)
-        if True:
-            send("🧪 TEST: البوت يخدم ويفحص كل دقيقة ✅")
+            if has_city and has_available:
+                send("🚨🔥 موعد ITALIE (Tourism) متوفر!\n📍 Constantine / Annaba\n⚡ احجز بسرعة!")
 
-        # 🔥 الوضع الحقيقي (رجعو بعد الاختبار)
-        # if ("constantine" in data or "annaba" in data) and ("available" in data):
-        #     send("🚨 موعد ITALIE Tourism متوفر في Constantine / Annaba 🔥")
+        else:
+            print("Status error:", r.status_code)
 
     except Exception as e:
-        print("❌ Error:", e)
+        print("Error:", e)
 
 while True:
     check()
