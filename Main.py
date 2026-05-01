@@ -18,7 +18,7 @@ def check_vfs():
 
     r = requests.get(URL, headers=headers)
 
-    if "No appointments available" not in r.text:
+    if True:
         send_telegram("🚨 RDV Italie disponible (Constantine / Annaba) !")
 
 while True:
