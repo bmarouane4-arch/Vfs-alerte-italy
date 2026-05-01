@@ -1,4 +1,4 @@
-8783362495import requests
+import requests
 import time
 import random
 
@@ -8,19 +8,24 @@ CHAT_ID = "1202717318"
 URL = "https://visa.vfsglobal.com/dza/fr/ita/book-an-appointment"
 
 def send_telegram(msg):
-    url = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
-    requests.post(url, data={"chat_id": CHAT_ID, "text": msg})
+    requests.post(
+        f"https://api.telegram.org/bot{TOKEN}/sendMessage",
+        data={"chat_id": CHAT_ID, "text": msg}
+    )
 
 def check_vfs():
     headers = {
-        "User-Agent": "Mozilla/5.0"
+        "User-Agent": "Mozilla/5.0",
+        "Accept-Language": "en-US,en;q=0.9"
     }
 
     r = requests.get(URL, headers=headers)
 
-    # إذا لقى موعد
-    if "No appointments available" not in r.text:
-        send_telegram("🚨 يوجد موعد VFS إيطاليا متوفر! احجز بسرعة!")
+    # 👇 نطبع جزء من الصفحة باش نفهمو
+    print(r.text[:1000])
+
+    # 🔴 مؤقتاً نخليه يبعث كل مرة باش نتأكد
+    send_telegram("✅ البوت راهو يخدم ويفحص VFS")
 
 while True:
     try:
