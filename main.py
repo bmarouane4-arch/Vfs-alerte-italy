@@ -30,14 +30,36 @@ def check():
         r = requests.post(URL, json=payload, headers=headers, timeout=20)
 
         if r.status_code == 200:
-            data = r.text.lower()
+            data = r.json()
 
-            # 🎯 فلترة:
-            has_city = ("constantine" in data) or ("annaba" in data)
-            has_available = ("available" in data)
+            dates_found = []
 
-            if has_city and has_available:
-                send("🚨🔥 موعد ITALIE (Tourism) متوفر!\n📍 Constantine / Annaba\n⚡ احجز بسرعة!")
+            if isinstance(data, list):
+                for item in data:
+                    text = str(item).lower()
+
+                    if ("constantine" in text or "annaba" in text) and ("available" in text):
+                        date = (
+                            item.get("date") or
+                            item.get("appointmentDate") or
+                            item.get("slotDate")
+                        )
+
+                        if date:
+                            dates_found.append(date)
+
+            # 📅 إذا لقى تواريخ
+            if dates_found:
+                dates_unique = sorted(set(dates_found))
+
+                message = "🚨🔥 مواعيد ITALIE (Tourism) متوفرة!\n"
+                message += "📍 Constantine / Annaba\n\n"
+                message += "📅 التواريخ:\n"
+
+                for d in dates_unique:
+                    message += f"- {d}\n"
+
+                send(message)
 
         else:
             print("Status error:", r.status_code)
