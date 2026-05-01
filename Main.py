@@ -2,7 +2,7 @@
 import time
 import random
 
-TOKEN = "8783362495:AAHqDon_R9bg5MEYW7yaFN3hyesn9sLi9Qw"
+TOKEN = "8783362495:AAFNNvuZWysgDklNH9UiHK2nqJBzDG6B6P8"
 CHAT_ID = "918455655"
 
 URL = "https://visa.vfsglobal.com/dza/fr/ita/book-an-appointment"
